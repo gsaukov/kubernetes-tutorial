@@ -1,0 +1,24 @@
+1. install Minikube, kubectl will be auto installed.
+2. Run docker minikube will auto discover hypervisor.
+3. Run: minikube start
+4. install Helm.
+5. Run run helm install <chart name> <path to chart>
+6. use kubectl to track pod status
+7. apply build helmcharts and see the results
+
+
+common commands:
+kubectl cluster-info
+helm install cache D:\work\cache --debug --dry-run
+helm install cache D:\work\cache
+helm update cache D:\work\cache
+helm delete cache
+minikube update-check
+helm status cache
+kubectl describe pod cache-76557b9865-8g77p
+kubectl get all
+kubectl get pods
+kubectl get pv
+kubectl get pvc
+kubectl get service
+kubectl logs my-pod
