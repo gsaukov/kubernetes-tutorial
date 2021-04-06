@@ -2,16 +2,18 @@
 2. Run docker minikube will auto discover hypervisor.
 3. Run: minikube start
 4. install Helm.
-5. Run run helm install <chart name> <path to chart>
-6. use kubectl to track pod status
-7. apply build helmcharts and see the results
-
+5. Clone git repository with charts museum.
+6. Run run helm install <chart name> <path to chart>
+7. use kubectl to track pod status
+8. make sure that namespaces of tiller/HELM/k8s are correct.
+                              export TILLER_NAMESPACE="dev-infra"
+                              printenv TILLER_NAMESPACE
 
 common commands:
 kubectl cluster-info
-helm install cache D:\work\cache --debug --dry-run
-helm install cache D:\work\cache
-helm update cache D:\work\cache
+helm install cache D:\work\cache-pod --debug --dry-run
+helm install cache helmcharts\cache
+helm upgrade cache helmcharts\cache
 helm delete cache
 minikube update-check
 helm status cache
@@ -22,3 +24,14 @@ kubectl get pv
 kubectl get pvc
 kubectl get service
 kubectl logs my-pod
+
+kubectl config set-context --current --namespace=mynamespace
+kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
+
+helm list --filter 'myapp'
+helm list --namespace myapp
+helm ls --all myapp
+helm del --purge team2-sdi-tester //delete and purge deployment
+helm install --name mychart . --namespace mynamespace --debug //install my chart from current folder to soecific namespace.
+
+to connect to service from outside of the cluster use nodePort service type. --kubectl describe svc serviceName //check the target IP.
