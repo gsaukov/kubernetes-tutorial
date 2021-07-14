@@ -24,6 +24,8 @@ kubectl get pv
 kubectl get pvc
 kubectl get service
 kubectl logs my-pod
+kubectl exec -it pod-name printenv | grep DATABASE //prints environment variables and filters.
+
 
 kubectl config set-context --current --namespace=mynamespace
 kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
@@ -33,5 +35,8 @@ helm list --namespace myapp
 helm ls --all myapp
 helm del --purge team2-sdi-tester //delete and purge deployment
 helm install --name mychart . --namespace mynamespace --debug //install my chart from current folder to soecific namespace.
+helm install --name mychart . --namespace mynamespace --debug --dry-run
+helm ugrade ${helm-chart-name} --reset-values --install --namespace=dev --set imageTag=${IMAGE_TAG} //updats helm chart with a new image.
+helm ugrade ${helm-chart-name} . --namespace=dev --debug --dry-run
 
 to connect to service from outside of the cluster use nodePort service type. --kubectl describe svc serviceName //check the target IP.
