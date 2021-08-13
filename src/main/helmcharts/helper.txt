@@ -23,12 +23,14 @@ kubectl get pods
 kubectl get pv
 kubectl get pvc
 kubectl get service
+kubectl get ingress
 kubectl logs my-pod
 kubectl exec -it pod-name printenv | grep DATABASE //prints environment variables and filters.
 
 
 kubectl config set-context --current --namespace=mynamespace
 kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
+kubectl get ingress | grep "<service-name>.<namespace>.svc.cluster.local:<service-port>"
 
 helm list --filter 'myapp'
 helm list --namespace myapp
