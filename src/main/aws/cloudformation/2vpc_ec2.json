@@ -1,0 +1,236 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Deploying to AWS with Terraform Lab: EC2InstanceProfile, EC2SecurityIngress, IGW, IGWAttach, InternetRoute, RouteTable, SG, SubnetA, SubnetB, SubnetRouteAssociation, TerraformController, TerraformRole, VPC",
+  "Resources": {
+    "IGW":{
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags":[
+          {"Key": "Name", "Value": "Terraform-Lab-IGW"}
+        ]
+      }
+    },
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "EnableDnsSupport": true,
+        "EnableDnsHostnames": true,
+        "CidrBlock": "10.0.0.0/16",
+        "Tags": [
+          {
+            "Key": "Name", "Value": {"Ref": "AWS::StackName" }
+          },
+          {
+            "Key": "Purpose","Value": "Terraform-Lab-VPC"
+          }
+        ]
+      }
+    },
+    "IGWAttach": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {"Ref":"VPC"},
+        "InternetGatewayId": {"Ref":"IGW"}
+      }
+    },
+    "RouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Ref":"VPC"}
+      }
+    },
+    "InternetRoute":{
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {"Ref":"IGW"},
+        "RouteTableId": {"Ref":"RouteTable"}
+      }
+    },
+    "SubnetRouteAssociation":{
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {"Ref":"RouteTable"},
+        "SubnetId": {"Ref":"SubnetA"}
+      }
+    },
+    "SG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SG for Terraform Lab",
+        "VpcId": {"Ref" : "VPC"},
+        "Tags":[
+          {
+            "Key": "Name", "Value": "Terrafor-Lab-SG"
+          }
+        ]
+      }
+
+    },
+    "SubnetA":{
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {"Ref":"VPC"},
+        "AvailabilityZone": {"Fn::Select": ["0", { "Fn::GetAZs" : {"Ref" : "AWS::Region"}} ]},
+        "CidrBlock": "10.0.1.0/24",
+        "Tags":[
+          {
+            "Key": "Name","Value":"SubnetA"
+          }
+        ],
+        "MapPublicIpOnLaunch": true
+      }
+    },
+    "SubnetB":{
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {"Ref":"VPC"},
+        "AvailabilityZone": {"Fn::Select": ["1", { "Fn::GetAZs" : {"Ref" : "AWS::Region"}} ]},
+        "CidrBlock": "10.0.2.0/24",
+        "Tags":[
+          {
+            "Key": "Name","Value":"SubnetB"
+          }
+        ],
+        "MapPublicIpOnLaunch": true
+      }
+    },
+    "EC2SecurityIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "FromPort": 22,
+        "GroupId": {"Fn::GetAtt": ["SG", "GroupId"]},
+        "ToPort": 22,
+        "CidrIp": "0.0.0.0/0",
+        "IpProtocol": "tcp"
+      }
+    },
+    "TerraformRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/",
+        "RoleName": "TerraformRole",
+        "AssumeRolePolicyDocument":{
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "sts:AssumeRole",
+              "Principal": {
+                "Service": ["ec2.amazonaws.com"]
+              }
+            }
+          ]
+        },
+        "Policies":[
+          {
+            "PolicyName": "CustomPolicyLab",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "Stmt1591121535953",
+                  "Action": [
+                    "ec2:Describe*",
+                    "ec2:Get*",
+                    "ec2:AcceptVpcPeeringConnection",
+                    "ec2:AttachInternetGateway",
+                    "ec2:AssociateRouteTable",
+                    "ec2:AuthorizeSecurityGroupEgress",
+                    "ec2:AuthorizeSecurityGroupIngress",
+                    "ec2:CreateInternetGateway",
+                    "ec2:CreateNetworkAcl",
+                    "ec2:CreateNetworkAclEntry",
+                    "ec2:CreateRoute",
+                    "ec2:CreateRouteTable",
+                    "ec2:CreateSecurityGroup",
+                    "ec2:CreateSubnet",
+                    "ec2:CreateTags",
+                    "ec2:CreateVpc",
+                    "ec2:CreateVpcPeeringConnection",
+                    "ec2:DeleteNetworkAcl",
+                    "ec2:DeleteNetworkAclEntry",
+                    "ec2:DeleteRoute",
+                    "ec2:DeleteRouteTable",
+                    "ec2:DeleteSecurityGroup",
+                    "ec2:DeleteSubnet",
+                    "ec2:DeleteTags",
+                    "ec2:DeleteVpc",
+                    "ec2:DeleteVpcPeeringConnection",
+                    "ec2:DetachInternetGateway",
+                    "ec2:DeleteInternetGateway",
+                    "ec2:DisassociateRouteTable",
+                    "ec2:DisassociateSubnetCidrBlock",
+                    "ec2:ModifySubnetAttribute",
+                    "ec2:ModifyVpcAttribute",
+                    "ec2:ModifyVpcPeeringConnectionOptions",
+                    "ec2:RejectVpcPeeringConnection",
+                    "ec2:ReplaceNetworkAclAssociation",
+                    "ec2:ReplaceNetworkAclEntry",
+                    "ec2:ReplaceRoute",
+                    "ec2:ReplaceRouteTableAssociation",
+                    "ec2:RevokeSecurityGroupEgress",
+                    "ec2:RevokeSecurityGroupIngress",
+                    "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+                    "ec2:UpdateSecurityGroupRuleDescriptionsIngress"
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "EC2InstanceProfile":{
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {"Ref":"TerraformRole"}
+        ]
+      }
+    },
+    "TerraformController":{
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-0a16233627f2c1a13",
+        "InstanceType": "t2.micro",
+        "Tags":[
+          {
+            "Key": "Name", "Value": "Terraform-Controller"
+          }
+        ],
+        "SecurityGroupIds": [
+          {"Ref": "SG" }
+        ],
+        "IamInstanceProfile":{ "Ref": "EC2InstanceProfile" },
+        "SubnetId": {"Ref":"SubnetA"},
+        "UserData": {"Fn::Base64":{
+          "Fn::Join": [
+            "",
+            [
+              "#!/bin/bash\n",
+              "echo ']SR|6xDJ' | sudo passwd --stdin cloud_user\n",
+              "yum -y install git wget jq unzip\n",
+              "sudo service sshd restart\n",
+              "sudo -iu cloud_user aws configure set default.region ",
+              {"Ref": "AWS::Region"},
+              "\n",
+              "wget -P /tmp -c https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip\n",
+              "unzip /tmp/terraform_0.12.29_linux_amd64.zip -d /bin/\n"
+            ]
+          ]
+        }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "pubIpAddress1":{
+      "Description": "PublicIP",
+      "Value": {"Fn::GetAtt": ["TerraformController", "PublicIp"]}
+    }
+  }
+}
