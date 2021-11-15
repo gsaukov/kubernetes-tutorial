@@ -29,7 +29,7 @@ kubectl get deployment
 kubectl exec -it pod-name printenv | grep DATABASE //prints environment variables and filters.
 kubectl rollout restart deployment my-deployment // restarts service.
 kubectl scale deploy my-deployment --replicas=0  //turns off service.
-kubect edit deployment/pod/svc my-deployment //changes resources properties and spawns new resource with replace.
+KUBE_EDITOR="nano" kubect edit deployment/pod/svc my-deployment //changes resources properties and spawns new resource with replace. Also uses nano editor
 
 kubectl config set-context --current --namespace=mynamespace
 kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
