@@ -29,7 +29,8 @@ kubectl get deployment
 kubectl exec -it pod-name printenv | grep DATABASE //prints environment variables and filters.
 
 kubectl create deployment hello-cluster --image=k8s.gcr.io/echoserver:1.4 --port=8080 // creates new deployment
-kubectl expose deployment hello-cluster --type=NodePort --port=8080 //Open node port but check port frowarding via "kubectl get svc: hello-cluster NodePort 100.67.82.184 <none> 8080:31594/TCP
+kubectl expose deployment hello-cluster --type=NodePort --port=8080 //Creates service. Open node port but check port frowarding via "kubectl get svc: hello-cluster NodePort 100.67.82.184 <none> 8080:31594/TCP
+kubectl port-forward --port=443 // Attach pods port to localhost
 kubectl rollout restart deployment my-deployment // restarts service.
 kubectl scale deploy my-deployment --replicas=0  //turns off service.
 KUBE_EDITOR="nano" kubect edit deployment/pod/svc my-deployment //changes resources properties and spawns new resource with replace. Also uses nano editor
