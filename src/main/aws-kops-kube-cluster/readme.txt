@@ -22,6 +22,8 @@ kops create cluster mycluster-736473.k8s.local --zones us-east-1a --yes --state 
 --node-volume-size 10 \
 --cloud aws
 
+--api-loadbalancer-class network \ // i was unable to make it work.
+
 //after cluster was created kops updated /Users/georgy.saukov/.kube with access data
 
 
@@ -30,3 +32,10 @@ kops validate cluster --name mycluster-736473.k8s.local
 kops get cluster mycluster-736473.k8s.local -o yaml
 
 kops delete cluster --name=mycluster-736473.k8s.local --yes --state s3://k8s-kops-bucket-736473
+
+kubectl create -f helloworld.yml
+kubectl create -f helloworld-service.yml // will create new aws load balancer
+http://a6835eede47934214a7e2329b90995a8-280e9302d349a4f4.elb.us-east-1.amazonaws.com/
+http://a6835eede47934214a7e2329b90995a8-494249827.us-east-1.elb.amazonaws.com/
+
+kops with fargate via kubelet - https://aws.amazon.com/blogs/opensource/aws-fargate-virtual-kubelet/

@@ -28,6 +28,7 @@ kubectl logs my-pod
 kubectl get deployment
 kubectl exec -it pod-name printenv | grep DATABASE //prints environment variables and filters.
 
+kubectl create -f path_to.yml //creates resource from file description
 kubectl create deployment hello-cluster --image=k8s.gcr.io/echoserver:1.4 --port=8080 // creates new deployment
 kubectl expose deployment hello-cluster --type=NodePort --port=8080 //Creates service. Open node port but check port frowarding via "kubectl get svc: hello-cluster NodePort 100.67.82.184 <none> 8080:31594/TCP
 kubectl port-forward --port=443 // Attach pods port to localhost
@@ -38,6 +39,10 @@ KUBE_EDITOR="nano" kubect edit deployment/pod/svc my-deployment //changes resour
 kubectl config set-context --current --namespace=mynamespace
 kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
 kubectl get ingress | grep "<service-name>.<namespace>.svc.cluster.local:<service-port>"
+
+kubectl run -i --tty busybox --image=busybox --restart=Never -- sh // execute comands within the cluster
+
+kubectl attach pod_name // attaches to running process so you can see console output
 
 helm list --filter 'myapp'
 helm list --namespace myapp
