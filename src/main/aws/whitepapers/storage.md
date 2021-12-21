@@ -1,0 +1,8 @@
+1. [Whitepaper: Storage Options in the Cloud](https://d1.awsstatic.com/whitepapers/Storage/AWS%20Storage%20Services%20Whitepaper-v9.pdf)
+2. [Whitepaper: Multi-Tenant SaaS Storage Strategies](https://d1.awsstatic.com/whitepapers/Multi_Tenant_SaaS_Storage_Strategies.pdf)
+3. [Whitepaper: Performance at Scale with Amazon Elasticache](https://d0.awsstatic.com/whitepapers/performance-at-scale-with-amazon-elasticache.pdf)
+4. [Video: Deep Dive on Amazon S3 and Amazon Glacier Storage Management](https://www.youtube.com/watch?v=SUWqDOnXeDw)
+5. [Video: Deep Dive on Amazon Relational Database Service](https://www.youtube.com/watch?v=TJxC-B9Q9tQ)
+6. [Video: ElastiCache Deep Dive: Best Practices and Usage Patterns](https://www.youtube.com/watch?v=_YYBdsuUq2M)
+7. [Video: Deep Dive: Using Hybrid Storage with AWS Storage Gateway to Solve On-Premises Storage Problems](https://www.youtube.com/watch?v=9wgaV70FeaM)
+8. [AWS Storage Optimization](https://d1.awsstatic.com/whitepapers/cost-optimization-storage-optimization.pdf)
