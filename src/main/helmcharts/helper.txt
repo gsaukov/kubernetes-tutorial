@@ -3,9 +3,10 @@
 3. Run: minikube start
 4. install Helm.
 5. Clone git repository with charts museum.
-6. Run run helm install <chart name> <path to chart>
-7. use kubectl to track pod status
-8. make sure that namespaces of tiller/HELM/k8s are correct.
+6. pull external chart dependencies: helm dependency update
+7. Run run helm install <chart name> <path to chart>
+8. use kubectl to track pod status
+9. make sure that namespaces of tiller/HELM/k8s are correct.
                               export TILLER_NAMESPACE="dev-infra"
                               printenv TILLER_NAMESPACE
 
@@ -31,9 +32,10 @@ kubectl exec -it pod-name printenv | grep DATABASE //prints environment variable
 kubectl create -f path_to.yml //creates resource from file description
 kubectl create deployment hello-cluster --image=k8s.gcr.io/echoserver:1.4 --port=8080 // creates new deployment
 kubectl expose deployment hello-cluster --type=NodePort --port=8080 //Creates service. Open node port but check port frowarding via "kubectl get svc: hello-cluster NodePort 100.67.82.184 <none> 8080:31594/TCP
-kubectl port-forward --port=443 // Attach pods port to localhost
+kubectl port-forward svc/postgres-db-postgresql 5888:5432 // Attach pods port 5432 to localhost 5888
 kubectl rollout restart deployment my-deployment // restarts service.
 kubectl scale deploy my-deployment --replicas=0  //turns off service.
+kubectl get secret --namespace default postgres-db-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode // get and decode secret for database
 KUBE_EDITOR="nano" kubect edit deployment/pod/svc my-deployment //changes resources properties and spawns new resource with replace. Also uses nano editor
 
 kubectl config set-context --current --namespace=mynamespace
