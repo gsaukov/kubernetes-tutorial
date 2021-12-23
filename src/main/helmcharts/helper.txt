@@ -56,3 +56,7 @@ helm ugrade ${helm-chart-name} --reset-values --install --namespace=dev --set im
 helm ugrade ${helm-chart-name} . --namespace=dev --debug --dry-run
 
 to connect to service from outside of the cluster use nodePort service type. --kubectl describe svc serviceName //check the target IP.
+
+
+helm install postgres-db bitnami/postgresql --debug --dry-run
+kubectl port-forward service/postgres-db-postgresql --port=5432
