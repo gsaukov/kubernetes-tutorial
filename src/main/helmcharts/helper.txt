@@ -49,7 +49,8 @@ kubectl attach pod_name // attaches to running process so you can see console ou
 helm list --filter 'myapp'
 helm list --namespace myapp
 helm ls --all myapp
-helm del --purge team2-sdi-tester //delete and purge deployment
+helm del myapp //delete and purge deployment
+helm uninstall myapp // just uninstalls deployment.
 helm install --name mychart . --namespace mynamespace --debug //install my chart from current folder to soecific namespace.
 helm install --name mychart . --namespace mynamespace --debug --dry-run
 helm ugrade ${helm-chart-name} --reset-values --install --namespace=dev --set imageTag=${IMAGE_TAG} //updats helm chart with a new image.
