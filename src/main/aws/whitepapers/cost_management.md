@@ -1,0 +1,6 @@
+1. [Whitepaper: Cost Optimization Pillar: AWS Well-Architected Framework](https://d1.awsstatic.com/whitepapers/architecture/AWS-Cost-Optimization-Pillar.pdf)
+2. [Whitepaper: Maximizing Value with AWS](https://d1.awsstatic.com/whitepapers/total-cost-of-operation-benefits-using-aws.pdf)
+3. [Whitepaper: Introduction to AWS Economics: Reducing Cost and Complexity](https://d1.awsstatic.com/whitepapers/introduction-to-aws-cloud-economics-final.pdf)
+4. [Video: Building a Solid Business Case for Cloud Migration](https://www.youtube.com/watch?v=CcspJkc7zqg)
+5. [Video: Running Lean Architectures: How to Optimize for Cost Efficiency](https://www.youtube.com/watch?v=XQFweGjK_-o)
+6. [Video: How Hess Has Continued to Optimize the AWS Cloud After Migrating](https://www.youtube.com/watch?v=1Z4BfRj2FiU)
