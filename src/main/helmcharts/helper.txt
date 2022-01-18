@@ -1,6 +1,6 @@
 1. install Minikube, kubectl will be auto installed.
 2. Run docker minikube will auto discover hypervisor.
-3. Run: minikube start
+3. Run: minikube start (to update "minikube update-check")
 4. install Helm.
 5. Clone git repository with charts museum.
 6. pull external chart dependencies: helm dependency update
@@ -16,7 +16,6 @@ helm install cache D:\work\cache-pod --debug --dry-run
 helm install cache helmcharts\cache
 helm upgrade cache helmcharts\cache
 helm delete cache
-minikube update-check
 helm status cache
 kubectl describe pod cache-76557b9865-8g77p
 kubectl get all
@@ -34,6 +33,9 @@ kubectl create deployment hello-cluster --image=k8s.gcr.io/echoserver:1.4 --port
 kubectl expose deployment hello-cluster --type=NodePort --port=8080 //Creates service. Open node port but check port frowarding via "kubectl get svc: hello-cluster NodePort 100.67.82.184 <none> 8080:31594/TCP
 kubectl port-forward svc/postgres-db-postgresql 5888:5432 // Attach pods port 5432 to localhost 5888
 kubectl rollout restart deployment my-deployment // restarts service.
+kubectl set image deployment my-deployment k8s-demo=wardviaene/k8s-demo:2 //update the image
+kubectl rollout undo deployment my-deployment // rollback the changes use --to-revision=6 to rollback to particular revision
+kubectl rollout history deployment my-deployment // shows the history of deployments
 kubectl scale deploy my-deployment --replicas=0  //turns off service.
 kubectl get secret --namespace default postgres-db-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode // get and decode secret for database
 KUBE_EDITOR="nano" kubect edit deployment/pod/svc my-deployment //changes resources properties and spawns new resource with replace. Also uses nano editor
