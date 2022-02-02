@@ -1,0 +1,290 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Tracking CodeCommit Metadata With DynamoDB",
+  "Resources": {
+    "DDBVPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default"
+      }
+    },
+
+    "PubSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": { "Ref": "DDBVPC" },
+        "CidrBlock": "10.0.0.0/24",
+        "MapPublicIpOnLaunch": true,
+        "AvailabilityZone" : "us-east-1a"
+      }
+    },
+
+    "PubSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": { "Ref": "DDBVPC" },
+        "CidrBlock": "10.0.1.0/24",
+        "MapPublicIpOnLaunch": true,
+        "AvailabilityZone": "us-east-1b"
+      }
+    },
+
+    "DDBIGW" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+      }
+    },
+
+    "IGWAttach" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "DDBVPC" },
+        "InternetGatewayId" : { "Ref" : "DDBIGW" }
+      }
+    },
+
+    "DDBVPCRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": { "Ref": "DDBVPC" }
+      }
+    },
+
+    "DDBRtblAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": { "Ref" : "PubSubnet" },
+        "RouteTableId": { "Ref": "DDBVPCRouteTable" }
+      }
+    },
+
+    "ToTheWorld": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "DDBIGW",
+      "Properties": {
+        "RouteTableId" : { "Ref" : "DDBVPCRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "DDBIGW" }
+      }
+    },
+
+    "WorkInstanceSG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Allows SSH Access to DDB Admin instance",
+        "VpcId": { "Ref": "DDBVPC" },
+        "SecurityGroupIngress" : [{
+          "IpProtocol" : "tcp",
+          "FromPort" : 22,
+          "ToPort" : 22,
+          "CidrIp" : "0.0.0.0/0"
+        }]
+      }
+    },
+
+    "Ec2Instance" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-096e189c66c11b2b5",
+        "InstanceType" : "t3a.micro",
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash\n",
+          "/bin/echo 'In(=Lc1c' | /bin/passwd cloud_user --stdin\n",
+          "yum update -y\n",
+          "yum install -y mariadb\n"
+        ]]}},
+
+        "NetworkInterfaces": [ {
+          "AssociatePublicIpAddress": true,
+          "DeviceIndex": "0",
+          "GroupSet": [{ "Ref" : "WorkInstanceSG" }],
+          "SubnetId": { "Ref" : "PubSubnet" }
+        } ],
+
+        "IamInstanceProfile": { "Ref": "DDBAdminProfile" }
+      }
+    },
+
+    "MySQLSG": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Allows MySQL access to source database",
+        "VpcId": { "Ref": "DDBVPC" },
+        "SecurityGroupIngress" : [{
+          "IpProtocol" : "tcp",
+          "FromPort" : 3306,
+          "ToPort" : 3306,
+          "CidrIp" : "0.0.0.0/0"
+        }]
+      }
+    },
+
+    "DBInstance" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId" : "ami-0cc89cd93fc3ece12",
+        "InstanceType" : "t3a.medium",
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash\n",
+          "mysql -u root -pStr0ngpass! -e \"USE employees; CREATE TABLE dms_source SELECT employees.*, titles.title, titles.from_date AS title_from_date, titles.to_date AS title_to_date, salaries.salary, salaries.from_date AS salary_from_date, salaries.to_date AS salary_to_date, dept_emp.dept_no as department_number, departments.dept_name as department_name, dept_emp.from_date AS dept_from_date, dept_emp.to_date AS dept_to_date FROM (SELECT * FROM employees LIMIT 5000) employees INNER JOIN titles ON employees.emp_no=titles.emp_no INNER JOIN salaries ON employees.emp_no=salaries.emp_no INNER JOIN dept_emp ON employees.emp_no=dept_emp.emp_no INNER JOIN departments ON dept_emp.dept_no=departments.dept_no;\"\n"
+        ]]}},
+
+        "NetworkInterfaces": [ {
+          "AssociatePublicIpAddress": true,
+          "DeviceIndex": "0",
+          "GroupSet": [{ "Ref" : "MySQLSG" }],
+          "SubnetId": { "Ref" : "PubSubnet" }
+        } ],
+
+        "IamInstanceProfile": { "Ref": "DDBAdminProfile" }
+      }
+    },
+
+
+    "DDBAdminRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+          "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
+        ]
+      }
+    },
+
+    "DDBAdminProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          { "Ref": "DDBAdminRole"}
+        ]
+      }
+    },
+
+    "DMSVPCROLE": {
+      "Type" : "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "dms.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AmazonDMSVPCManagementRole"
+        ],
+        "RoleName" : "dms-vpc-role"
+      }
+    },
+
+    "DMSDDBROLE": {
+      "Type" : "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "dms.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        ],
+        "RoleName" : "dms-dynamodb-role"
+      }
+    },
+
+    "DMSSubnetGroup":{
+      "Type": "AWS::DMS::ReplicationSubnetGroup",
+      "Properties":{
+        "ReplicationSubnetGroupDescription": "relational2ddbsubnetgroup",
+        "SubnetIds": [
+          { "Ref" : "PubSubnet" },
+          { "Ref" : "PubSubnet2" }
+        ]
+      }
+    },
+
+    "ReplicationInstance": {
+      "Type": "AWS::DMS::ReplicationInstance",
+      "Properties":{
+        "ReplicationInstanceClass": "dms.t2.medium",
+        "ReplicationInstanceIdentifier": "relational2ddb",
+        "VpcSecurityGroupIds" : [{ "Ref" : "MySQLSG" }],
+        "ReplicationSubnetGroupIdentifier" : { "Ref" : "DMSSubnetGroup" }
+      }
+    },
+
+    "MySQLEndpoint": {
+      "Type" : "AWS::DMS::Endpoint",
+      "Properties" : {
+        "EngineName" : "mysql",
+        "EndpointType" : "source",
+        "Username" : "cloud_user",
+        "Password" : "bettertogether",
+        "ServerName" : { "Fn::GetAtt": ["DBInstance", "PrivateIp"] },
+        "DatabaseName": "employees",
+        "Port": 3306
+      }
+    },
+
+    "DDBEndpoint": {
+      "Type" : "AWS::DMS::Endpoint",
+      "Properties" : {
+        "EngineName" : "dynamodb",
+        "EndpointType" : "target",
+        "DynamoDbSettings": {
+          "ServiceAccessRoleArn": { "Fn::GetAtt" : ["DMSDDBROLE", "Arn"] }
+        }
+      }
+    }
+
+  },
+
+  "Outputs": {
+    "pubIpAddress1": {
+      "Description": "Public IP address of Bastion Host",
+      "Value": {
+        "Fn::GetAtt": [
+          "Ec2Instance",
+          "PublicIp"
+        ]
+      }
+    },
+
+    "pubIpAddress2": {
+      "Description": "Public IP of source database",
+      "Value": {
+        "Fn::GetAtt": [
+          "DBInstance",
+          "PublicIp"
+        ]
+      }
+    }
+  }
+}
