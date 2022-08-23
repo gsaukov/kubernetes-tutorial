@@ -45,7 +45,7 @@ public class CartController {
         logger.info("Deleted counter cart id: " + cartId);
     }
 
-    @PostMapping("/{cartId}/calculate")
+    @GetMapping("/{cartId}/calculate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void calculateCart(@PathVariable UUID cartId) {
         cartService.calculateCart(cartId);

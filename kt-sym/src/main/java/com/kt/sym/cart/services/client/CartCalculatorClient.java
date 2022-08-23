@@ -14,12 +14,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @FeignClient(value = "cartCalculatorClient",
-        url = "cart-calculator:8080")
+        url = "${feign.client.config.cartCalculatorClient.url}")
 public interface CartCalculatorClient {
 
-    @RequestMapping(method = POST, value = "/calculateCart", produces = APPLICATION_JSON_VALUE,
+    @RequestMapping(method = POST, value = "api/calculateCart", produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE)
-    @Headers("Content-Type: " + APPLICATION_JSON_VALUE)
+    @Headers("Content-Type: application/json")
     String calculateCart(@RequestParam("grant_type") String grantType,
                     @RequestParam("client_id") String clientId,
                     @RequestBody JsonNode cart);
