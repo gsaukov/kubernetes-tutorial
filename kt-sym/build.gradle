@@ -40,3 +40,11 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+bootJar {
+    archiveFileName = "kt-sym.jar" //versionless jar. For versions and artifactory use pipeline.
+}
+
+jar {
+    enabled = false
+}
