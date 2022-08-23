@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+
+  kt-sym:
+    container_name: kt-sym
+    image: kt-sym:latest
+    environment:
+      KT_SYM_CART_CALCULATOR_URL: cartCalculator
+    ports:
+      - "80:80"
+#    networks:
+#      - kt
+#    volumes:
+#      - kt:/data/kt
+
+volumes:
+  kt-sym:
+
+networks:
+  kt:
+
