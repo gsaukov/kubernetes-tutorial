@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: kt-sym
+
+server:
+  port: 80
+  error.whitelabel.enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+          include: "*"
