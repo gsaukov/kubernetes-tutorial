@@ -1,0 +1,22 @@
+##### ONLY FOR MINIKUBE
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kt-sym-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: kt-sym.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kt-sym-service
+                port:
+                  number: 80
+---
