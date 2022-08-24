@@ -14,9 +14,9 @@ services:
 #    volumes:
 #      - kt:/data/kt
 
-volumes:
-  kt-sym:
+#volumes:
+#  kt-sym:
 
-networks:
-  kt:
+#networks:
+#  kt:
 
