@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kt-sym
+  labels:
+    app: kt-sym
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kt-sym
+  template:
+    metadata:
+      labels:
+        app: kt-sym
+    spec:
+      containers:
+        - name: kt-sym
+          image: kt-sym:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: KT_SYM_CART_CALCULATOR_URL
+              value: "cartCalculator"
+---
