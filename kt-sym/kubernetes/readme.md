@@ -16,6 +16,11 @@
 
 11. Add `192.168.49.2 kt-sym.com` to private/etc/hosts (mac location, requires sudo)
 
+
+## Knative 
+Follow tis steps to enhance your cluster: 
+https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml/#prerequisites
+
 Troubleshooting:
 https://stackoverflow.com/questions/40144138/pull-a-local-image-to-run-a-pod-in-kubernetes
 https://stackoverflow.com/questions/38979231/imagepullbackoff-local-repository-with-minikube

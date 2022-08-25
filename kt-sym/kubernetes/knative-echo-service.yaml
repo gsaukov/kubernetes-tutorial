@@ -1,0 +1,14 @@
+### KNATIVE, i.e. lambda service.
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: knative-echo-service
+spec:
+  template:
+    spec:
+      containers:
+        - image: ealen/echo-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
