@@ -23,5 +23,5 @@ spec:
             - containerPort: 80
           env:
             - name: KT_SYM_CART_CALCULATOR_URL
-              value: "cartCalculator"
+              value: "echo-server-service"
 ---
