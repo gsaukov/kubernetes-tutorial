@@ -1,34 +1,33 @@
 package com.kt.sym.cart.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kt.sym.cart.services.client.CartCalculatorClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
+@Slf4j
 @Service
 public class CartService {
 
-    @Autowired
-    ObjectMapper mapper;
+    @Value("${kt.sym.cart.body}")
+    private String defaultCart;
 
-    @Autowired
-    CartCalculatorClient client;
+    private final ObjectMapper mapper;
+    private final CartCalculatorClient client;
 
-    public void calculateCart(UUID cartId) {
-        String cartBody = "[{ \"book\": {\"isbn\": \"1447264533\",\"author\": \"Margaret Mitchell\",\"title\": \"Gone with the Wind\",\"synopsis\": null,\"language\": null }, \"links\": [{\"rel\": \"self\",\"href\": \"http://localhost:8081/api/books/1447264533\"} ]},{ \"book\": {\"isbn\": \"0451524934\",\"author\": \"George Orwell\",\"title\": \"1984\",\"synopsis\": null,\"language\": null }, \"links\": [{\"rel\": \"self\",\"href\": \"http://localhost:8081/api/books/0451524934\"} ]}]";
-        JsonNode cart = null;
-        try {
-            cart = mapper.readTree(cartBody);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        client.calculateCart("", "", cart);
+    public CartService(ObjectMapper mapper, CartCalculatorClient client) {
+        this.mapper = mapper;
+        this.client = client;
     }
 
+    public String calculateCart() throws JsonProcessingException {
+        return calculateCart(defaultCart);
+    }
 
+    public String calculateCart(String cartBody) throws JsonProcessingException {
+        return client.calculateCart("", "", mapper.readTree(cartBody));
+    }
 
 }
