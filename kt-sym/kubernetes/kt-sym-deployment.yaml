@@ -25,5 +25,5 @@ spec:
             - name: KT_SYM_CLASSIC_CART_CALCULATOR_URL
               value: "classic-echo-service"
             - name: KT_SYM_KNATIVE_CART_CALCULATOR_URL
-              value: "knative-echo-service"
+              value: "knative-echo-service.default.svc.cluster.local"
 ---

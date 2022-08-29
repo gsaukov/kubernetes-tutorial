@@ -4,6 +4,8 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: knative-echo-service
+  labels:
+    networking.knative.dev/visibility: cluster-local
 spec:
   template:
     spec:

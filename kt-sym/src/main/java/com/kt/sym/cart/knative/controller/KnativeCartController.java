@@ -4,7 +4,7 @@ import com.kt.sym.cart.knative.services.KnativeCartService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/knativeCart")
+@RequestMapping("/api/v1/knative/cart")
 public class KnativeCartController {
 
     private final KnativeCartService cartService;

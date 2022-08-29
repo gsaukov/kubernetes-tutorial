@@ -18,8 +18,11 @@
 
 
 ## Knative 
-Follow tis steps to enhance your cluster: 
+Follow tis steps to enhance your cluster:
 https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml/#prerequisites
+
+kubectl get ksvc knative-echo-service --output=custom-columns=NAME:.metadata.name,URL:.status.url
+
 
 Troubleshooting:
 https://stackoverflow.com/questions/40144138/pull-a-local-image-to-run-a-pod-in-kubernetes
