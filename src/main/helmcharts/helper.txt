@@ -44,6 +44,8 @@ kubectl config set-context --current --namespace=mynamespace
 kubectl get all --all-namespaces | grep myapp //search myapp across all namespaces and all object types(service/deployment/pod)
 kubectl get ingress | grep "<service-name>.<namespace>.svc.cluster.local:<service-port>"
 
+kubectl delete all --all -n {namespace}
+
 kubectl run -i --tty busybox --image=busybox --restart=Never -- sh // execute comands within the cluster
 
 kubectl attach pod_name // attaches to running process so you can see console output
