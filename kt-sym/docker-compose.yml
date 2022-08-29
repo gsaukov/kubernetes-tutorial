@@ -6,7 +6,8 @@ services:
     container_name: kt-sym
     image: kt-sym:latest
     environment:
-      KT_SYM_CART_CALCULATOR_URL: cartCalculator
+      KT_SYM_CLASSIC_CART_CALCULATOR_URL: classicCartCalculator
+      KT_SYM_KNATIVE_CART_CALCULATOR_URL: knativeCartCalculator
     ports:
       - "80:80"
 #    networks:

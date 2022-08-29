@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: echo-server-service
+  name: classic-echo-service
 spec:
   ports:
     - port: 80
