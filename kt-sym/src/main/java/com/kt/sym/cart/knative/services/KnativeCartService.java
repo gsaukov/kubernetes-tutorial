@@ -1,23 +1,23 @@
-package com.kt.sym.cart.services;
+package com.kt.sym.cart.knative.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kt.sym.cart.services.client.CartCalculatorClient;
+import com.kt.sym.cart.knative.services.client.KnativeCartCalculatorClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class CartService {
+public class KnativeCartService {
 
     @Value("${kt.sym.cart.body}")
     private String defaultCart;
 
     private final ObjectMapper mapper;
-    private final CartCalculatorClient client;
+    private final KnativeCartCalculatorClient client;
 
-    public CartService(ObjectMapper mapper, CartCalculatorClient client) {
+    public KnativeCartService(ObjectMapper mapper, KnativeCartCalculatorClient client) {
         this.mapper = mapper;
         this.client = client;
     }

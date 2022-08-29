@@ -1,15 +1,15 @@
-package com.kt.sym.cart.controller;
+package com.kt.sym.cart.classic.controller;
 
-import com.kt.sym.cart.services.CartService;
+import com.kt.sym.cart.classic.services.ClassicCartService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/cart")
-public class CartController {
+@RequestMapping("/api/v1/classic/cart")
+public class ClassicCartController {
 
-    private final CartService cartService;
+    private final ClassicCartService cartService;
 
-    public CartController(CartService cartService) {
+    public ClassicCartController(ClassicCartService cartService) {
         this.cartService = cartService;
     }
 

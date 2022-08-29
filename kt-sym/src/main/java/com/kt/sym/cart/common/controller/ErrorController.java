@@ -1,4 +1,4 @@
-package com.kt.sym.cart.controller;
+package com.kt.sym.cart.common.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

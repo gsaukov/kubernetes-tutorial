@@ -1,4 +1,4 @@
-package com.kt.sym.cart.services.client;
+package com.kt.sym.cart.knative.services.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import feign.Headers;
@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
-
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@FeignClient(value = "cartCalculatorClient",
-        url = "${feign.client.config.cartCalculatorClient.url}")
-public interface CartCalculatorClient {
+@FeignClient(value = "knativeCartCalculatorClient",
+        url = "${feign.client.config.knativeCartCalculatorClient.url}")
+public interface KnativeCartCalculatorClient {
 
     @RequestMapping(method = POST, value = "api/calculateCart", produces = APPLICATION_JSON_VALUE,
             consumes = APPLICATION_JSON_VALUE)
